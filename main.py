@@ -25,8 +25,16 @@ async def on_ready():
 
 @client.event
 async def on_message(message):
+    print(message.content)
+
+    message.content = message.content.lower()
 
     if message.content.startswith('z!'):
-        await message.channel.send('Hello')
+
+        if message.content == 'z! ping':
+            await message.channel.send("I'm alive :)")
+
+        elif message.content == 'z! info':
+            await message.channel.send('Zer0 Bot')
 
 client.run(token)
