@@ -3,6 +3,10 @@ import os
 import re
 import urllib.parse
 import base64
+import asyncio
+from discord.ext import commands
+import datetime
+
 
 
 def getQuote(message):
@@ -11,51 +15,69 @@ def getQuote(message):
     return match.group(1)
 
 
-client = discord.Client()
+bot = commands.Bot(command_prefix='>', description="This is a Helper Bot")
 
 
-@client.event
+# @client.event
+# async def on_message(message):
+#     if message.author == client.user:
+#         return
+#     msg = message.content
+#     await bot.process_commands(message)
+#     if message.content.startswith("!hello"):
+#         await message.reply("hello {}".format(message.author))
+
+
+@bot.command()
+async def enb64(ctx,*,msg):
+    await ctx.reply("```{}```".format
+                        (base64.b64encode(msg.encode('utf-8')).decode("utf-8")))
+
+@bot.command()
+def deb64(ctx,*,msg):
+    msg = getQuote(ctx,*,msg)
+    await ctx.reply("```{}```".format
+                        (str(base64.b64decode(msg), "UTF-8")))
+
+@bot.command()
+def deurl(ctx,*,msg):
+    await ctx.reply("```{}```".format(urllib.parse.unquote(msg)))
+
+@bot.command()
+def enurl(ctx,*,msg):
+    await ctx.reply("```{}```".format(urllib.parse.quote(msg)))
+
+
+
+@bot.command()
+async def info(ctx):
+    embed = discord.Embed(title=f"{ctx.guild.name}", description="Lorem Ipsum asdasd",
+                          timestamp=datetime.datetime.utcnow(), color=discord.Color.blue())
+    embed.add_field(name="Server created at", value=f"{ctx.guild.created_at}")
+    embed.add_field(name="Server Owner", value=f"{ctx.guild.owner}")
+    embed.add_field(name="Server Region", value=f"{ctx.guild.region}")
+    embed.add_field(name="Server ID", value=f"{ctx.guild.id}")
+    # embed.set_thumbnail(url=f"{ctx.guild.icon}")
+    embed.set_thumbnail(url="https://pluralsight.imgix.net/paths/python-7be70baaac.png")
+
+    await ctx.send(embed=embed)
+
+@bot.command()
+async def ping(ctx):
+    await ctx.send('pong')
+
+
+@bot.event
 async def on_ready():
-    print('we have logged in as {0.user}'.format(client))
+    await bot.change_presence(activity=discord.Streaming(name="Tutorials", url="http://www.twitch.tv/accountname"))
+    print('My Ready is Body')
 
 
-@client.event
+@bot.listen()
 async def on_message(message):
-    if message.author == client.user:
-        return
-    msg = message.content
-    if message.content.startswith("!hello"):
-        await message.reply("hello {}".format(message.author))
+    if "tutorial" in message.content.lower():
+        # in this case don't respond with the word "Tutorial" or you will call the on_message event recursively
+        await message.channel.send('This is that you want http://google.com/')
+        await bot.process_commands(message)
 
-
-    if "!z en-b64" in msg:
-        msg = msg.replace('!z en-b64', '')
-        msg = getQuote(msg)
-        await message.reply("```{}```".format
-                            (base64.b64encode(msg.encode('utf-8')).decode("utf-8")))
-        
-        
-        
-    if "!z de-b64" in msg:
-        msg = msg.replace('!z de-b64', '')
-        msg = getQuote(msg)
-        print(msg)
-        await message.reply("{}".format
-                            (str(base64.b64decode(msg),"UTF-8")))
-
-
-
-    if "!z de-url" in msg:
-        msg = msg.replace('!z de-url', '')
-        msg = getQuote(msg)
-        print(msg)
-        await message.reply("{}".format(urllib.parse.unquote(msg)))
-
-
-    if "!z en-url" in msg:
-        msg = msg.replace('!z en-url', '')
-        msg = getQuote(msg)
-        print(msg)
-        await message.reply("```{}```".format(urllib.parse.quote(msg)))
-
-client.run(os.getenv('TOKEN'))
+bot.run(os.getenv('TOKEN'))
