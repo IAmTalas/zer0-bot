@@ -37,7 +37,6 @@ async def ping(ctx):
 
 @bot.event
 async def on_ready():
-    await bot.change_presence(activity=discord.Streaming(name="Tutorials", url="http://www.twitch.tv/accountname"))
     print("I'm ready")
 
 bot.run(token)
