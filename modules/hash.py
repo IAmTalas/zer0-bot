@@ -1,4 +1,8 @@
 
+'''
+Hash module for calculating hash of strings
+'''
+
 import hashlib
 
 def md5(word):
@@ -28,3 +32,15 @@ def sha256(word):
 	checkedHash = hashtype.hexdigest()
 
 	return {'hash':checkedHash,'word':word}
+
+def sha512(word):
+	hashtype = hashlib.sha512()
+
+	word = word.strip('\n')
+	hashtype.update(word.encode('utf-8'))
+	checkedhash = hashtype.hexdigest()
+
+	return {'hash':checkedhash ,'word':word}
+
+def hash_manager():
+	pass
