@@ -4,8 +4,6 @@
 Zer0 Discord Bot
 '''
 
-import discord
-
 try:
     with open('token.txt','r') as token_file:
         token = token_file.read()
@@ -16,25 +14,30 @@ except FileNotFoundError:
         exit()
 
 import discord
+from discord.ext import commands
+import datetime
 
-client = discord.Client()
+bot = commands.Bot(command_prefix='z! ', description="Zer0 Bot")
 
-@client.event
+@bot.command()
+async def info(ctx):
+    embed = discord.Embed(title=f"{ctx.guild.name}", description="Zer0 Bot",
+                          timestamp=datetime.datetime.utcnow(), color=discord.Color.blue())
+    embed.add_field(name="Server created at", value=f"{ctx.guild.created_at}")
+    embed.add_field(name="Server Owner", value=f"{ctx.guild.owner}")
+    embed.add_field(name="Server Region", value=f"{ctx.guild.region}")
+    embed.add_field(name="Server ID", value=f"{ctx.guild.id}")
+    # embed.set_thumbnail(url=f"{ctx.guild.icon}")
+    embed.set_thumbnail(url="https://pluralsight.imgix.net/paths/python-7be70baaac.png")
+    await ctx.send(embed=embed)
+
+@bot.command()
+async def ping(ctx):
+    await ctx.send('pong')
+
+@bot.event
 async def on_ready():
-    print('logged in as {}'.format(client.user))
+    await bot.change_presence(activity=discord.Streaming(name="Tutorials", url="http://www.twitch.tv/accountname"))
+    print("I'm ready")
 
-@client.event
-async def on_message(message):
-    print(message.content)
-
-    message.content = message.content.lower()
-
-    if message.content.startswith('z!'):
-
-        if message.content == 'z! ping':
-            await message.channel.send("I'm alive :)")
-
-        elif message.content == 'z! info':
-            await message.channel.send('Zer0 Bot')
-
-client.run(token)
+bot.run(token)
