@@ -1,40 +1,61 @@
-#!/usr/bin/env python3
-
-'''
-Zer0 Discord Bot
-'''
-
 import discord
+import os
+import re
+import urllib.parse
+import base64
 
-try:
-    with open('token.txt','r') as token_file:
-        token = token_file.read()
 
-except FileNotFoundError:
-    with open('token.txt','w') as token_file:
-        print('put the token inside token.txt file')
-        exit()
+def getQuote(message):
+    regex = r"\"(.*)\""
+    match = re.search(regex, message)
+    return match.group(1)
 
-import discord
 
 client = discord.Client()
 
+
 @client.event
 async def on_ready():
-    print('logged in as {}'.format(client.user))
+    print('we have logged in as {0.user}'.format(client))
+
 
 @client.event
 async def on_message(message):
-    print(message.content)
+    if message.author == client.user:
+        return
+    msg = message.content
+    if message.content.startswith("!hello"):
+        await message.reply("hello {}".format(message.author))
 
-    message.content = message.content.lower()
 
-    if message.content.startswith('z!'):
+    if "!z en-b64" in msg:
+        msg = msg.replace('!z en-b64', '')
+        msg = getQuote(msg)
+        await message.reply("```{}```".format
+                            (base64.b64encode(msg.encode('utf-8')).decode("utf-8")))
+        
+        
+        
+    if "!z de-b64" in msg:
+        msg = msg.replace('!z de-b64', '')
+        msg = getQuote(msg)
+        print(msg)
+        await message.reply("{}".format
+                            (str(base64.b64decode(msg),"UTF-8")))
 
-        if message.content == 'z! ping':
-            await message.channel.send("I'm alive :)")
 
-        elif message.content == 'z! info':
-            await message.channel.send('Zer0 Bot')
 
-client.run(token)
+    if "!z de-url" in msg:
+        msg = msg.replace('!z de-url', '')
+        msg = getQuote(msg)
+        print(msg)
+        await message.reply("{}".format(urllib.parse.unquote(msg)))
+
+
+    if "!z en-url" in msg:
+        msg = msg.replace('!z en-url', '')
+        msg = getQuote(msg)
+        print(msg)
+        await message.reply("```{}```".format(urllib.parse.quote(msg)))
+
+client.run(os.getenv('TOKEN'))
