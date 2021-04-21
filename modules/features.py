@@ -1,28 +1,27 @@
-
 '''
 Module for adding features
 '''
-
 from bs4 import BeautifulSoup
 import requests
+import discord
 from tabulate import tabulate
 import re
 
-def show_latest_cves():
 
+def show_latest_cves():
     url = 'https://cve.circl.lu/'
 
     cve_req = requests.get(url)
     content = str(cve_req.content)
-    soup = BeautifulSoup(content ,'html.parser')
+    soup = BeautifulSoup(content, 'html.parser')
     content = soup.findAll('tr')
 
     number_of_cves = 0
     cve_names = []
     for l in content:
-        if number_of_cves >= 10 :
+        if number_of_cves >= 10:
             break
-        if l.get('id') :
+        if l.get('id'):
             number_of_cves += 1
             cve_names.append(l.get('id'))
 
@@ -38,19 +37,19 @@ def show_latest_cves():
         # data
         cve_name = cve
         cve_link = url + 'cve/' + cve
-        cvss = re.findall(cvss_pattern ,specific_cve)
+        cvss = re.findall(cvss_pattern, specific_cve)
         if len(cvss) != 1:
             cvss = 'None'
         else:
             cvss = cvss[0]
 
-        summary = re.findall(summary_pattern ,specific_cve)
+        summary = re.findall(summary_pattern, specific_cve)
         if len(summary) != 1:
             summary = 'Empty'
         else:
             summary = summary[0]
 
-        published_at = re.findall(published_at_pattern ,specific_cve)
+        published_at = re.findall(published_at_pattern, specific_cve)
         if len(published_at) != 1:
             published_at = 'None'
         else:
@@ -59,7 +58,25 @@ def show_latest_cves():
         if summary:
             summary = summary[0:10] + '...'
 
-        cves_info.append([cve_name ,cvss ,summary ,published_at ,cve_link])
+        cves_info.append([cve_name, cvss, summary, published_at, cve_link])
 
-    temp_text = tabulate(cves_info ,headers=['CVE_Name','CVSS','Summary','Published At','CVE_Link'])
+    temp_text = tabulate(cves_info, headers=['CVE_Name', 'CVSS', 'Summary', 'Published At', 'CVE_Link'])
     return temp_text
+
+
+'''
+Hacker news top 10 news
+'''
+
+
+def hackerNews(count=10):
+    newsList = []
+    if count <= 20:
+        topNews = requests.get("https://hacker-news.firebaseio.com/v0/topstories.json?print=pretty")
+        for news in topNews.json()[:count]:
+            newsJson = requests.get(f"https://hacker-news.firebaseio.com/v0/item/{news}.json?print=pretty").json()
+            embed = discord.Embed(title=f"{newsJson['title']}", description=f"by {newsJson['by']}",
+                                  color=discord.Color.red())
+            embed.add_field(name="Link", value=f"{newsJson['url']}")
+            newsList.append(embed)
+        return newsList
