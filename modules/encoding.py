@@ -5,7 +5,7 @@ Encoding functions
 
 import base64
 
-all_encoding_algs = ['base64']
+all_encoding_algs = ['b64']
 
 def en_base64(word):
 
@@ -33,7 +33,7 @@ class Encoder:
                 alg = encoding_alg_and_string[0]
                 string = encoding_alg_and_string[1]
 
-                if alg == 'base64':
+                if alg == 'b64':
                     return en_base64(string)
 
         else:
@@ -43,8 +43,8 @@ class Encoder:
         temp_msg = "\n\t\t\t".join(all_encoding_algs)
         help_msg = '''
         ```
-z! encode algorithm your_string
-z! encode base64 xenon
+z! en algorithm your_string
+z! en b64 xenon
 
     available algorithmes :
             {}

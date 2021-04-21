@@ -68,9 +68,9 @@ async def info(ctx):
 async def ping(ctx):
     await ctx.send('pong :ping_pong:')
 
-
+# define encoding function
 @bot.command()
-async def encode(ctx,*,msg):
+async def en(ctx,*,msg):
     if msg:
         encoder = Encoder(msg)
         result = encoder.encode()
@@ -93,14 +93,14 @@ async def encoding_help(ctx,*,msg=None):
     await ctx.send(encoder.show_help())
 
 # handle encode function errors
-@encode.error
+@en.error
 async def encode_error(ctx ,error):
     if isinstance(error ,commands.MissingRequiredArgument):
-        await ctx.send('specify the encoding type you want --> z! encode base64 your_string')
+        await ctx.send('specify the encoding type you want --> z! en base64 your_string')
 
-
+# define decoding function
 @bot.command()
-async def decode(ctx,*,msg):
+async def de(ctx,*,msg):
     if msg:
         decoder = Decoder(msg)
         result = decoder.decode()
@@ -123,10 +123,10 @@ async def decoding_help(ctx,*,msg=None):
     await ctx.send(decoder.show_help())
 
 # handle decode function errors
-@decode.error
+@de.error
 async def decode_error(ctx ,error):
     if isinstance(error ,commands.MissingRequiredArgument):
-        await ctx.send('specify the decoding type you want --> z! decode base64 your_string')
+        await ctx.send('specify the decoding type you want --> z! de base64 your_string')
 
 
 bot.run(token)

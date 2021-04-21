@@ -5,7 +5,7 @@ Decoding functions
 
 import base64
 
-all_encoding_algs = ['base64']
+all_encoding_algs = ['b64']
 
 def de_base64(word):
 
@@ -33,7 +33,7 @@ class Decoder:
                 alg = encoding_alg_and_string[0]
                 string = encoding_alg_and_string[1]
 
-                if alg == 'base64':
+                if alg == 'b64':
                     return de_base64(string)
 
         else:
@@ -43,8 +43,8 @@ class Decoder:
         temp_msg = "\n\t\t\t".join(all_encoding_algs)
         help_msg = '''
         ```
-z! decode algorithm your_string
-z! decode base64 eGVub24=
+z! de algorithm your_string
+z! de b64 eGVub24=
 
     available algorithmes :
             {}
