@@ -39,6 +39,7 @@ Zer0 Bot :
 +    z! ping            --> send a pong response                          +
 +    z! encoding_help   --> show help about encoding strings              +
 +    z! decoding_help   --> show help about decoding strings              +
++    z! latest_cves     --> show 10 latest CVEs                           +
 +-------------------------------------------------------------------------+
 .
 ```
@@ -58,10 +59,10 @@ async def info(ctx):
     await ctx.send(embed=embed)
 
 # generally handling errors
-# @bot.event
-# async def on_command_error(ctx ,error):
-#     if isinstance(error ,commands.MissingRequiredArgument):
-#         await ctx.send('Fill the required arguments pls')
+@bot.event
+async def on_command_error(ctx ,error):
+    if isinstance(error ,commands.CommandNotFound):
+        await ctx.send('Unknown command : z! helpme --> for help')
 
 
 @bot.command()
@@ -128,5 +129,10 @@ async def decode_error(ctx ,error):
     if isinstance(error ,commands.MissingRequiredArgument):
         await ctx.send('specify the decoding type you want --> z! de base64 your_string')
 
+
+@bot.command()
+async def latest_cves(ctx,*,msg=None):
+    from modules.features import show_latest_cves
+    await ctx.send(show_latest_cves())
 
 bot.run(token)
