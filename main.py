@@ -5,11 +5,11 @@ Zer0 Discord Bot
 '''
 
 try:
-    with open('token.txt','r') as token_file:
+    with open('token.txt', 'r') as token_file:
         token = token_file.read()
 
 except FileNotFoundError:
-    with open('token.txt','w') as token_file:
+    with open('token.txt', 'w') as token_file:
         print('put the token inside token.txt file')
         exit()
 
@@ -21,11 +21,13 @@ from modules.decoding import Decoder
 
 bot = commands.Bot(command_prefix='z! ', description="Zer0 Bot")
 
+
 @bot.event
 async def on_ready():
     # Setting Gaming status
     await bot.change_presence(activity=discord.Game(name="Listening to z! helpme --> for help"))
     print("I'm ready")
+
 
 @bot.command()
 async def helpme(ctx):
@@ -46,6 +48,7 @@ Zer0 Bot :
     '''
     await ctx.send(help_msg)
 
+
 @bot.command()
 async def info(ctx):
     embed = discord.Embed(title=f"{ctx.guild.name}", description="Zer0 Bot",
@@ -58,10 +61,11 @@ async def info(ctx):
     embed.set_thumbnail(url="https://pluralsight.imgix.net/paths/python-7be70baaac.png")
     await ctx.send(embed=embed)
 
+
 # generally handling errors
 @bot.event
-async def on_command_error(ctx ,error):
-    if isinstance(error ,commands.CommandNotFound):
+async def on_command_error(ctx, error):
+    if isinstance(error, commands.CommandNotFound):
         await ctx.send('Unknown command : z! helpme --> for help')
 
 
@@ -69,9 +73,10 @@ async def on_command_error(ctx ,error):
 async def ping(ctx):
     await ctx.send('pong :ping_pong:')
 
+
 # define encoding function
 @bot.command()
-async def en(ctx,*,msg):
+async def en(ctx, *, msg):
     if msg:
         encoder = Encoder(msg)
         result = encoder.encode()
@@ -88,20 +93,23 @@ encoded : {}
         else:
             await ctx.send(temp_msg)
 
+
 @bot.command()
-async def encoding_help(ctx,*,msg=None):
+async def encoding_help(ctx, *, msg=None):
     encoder = Encoder()
     await ctx.send(encoder.show_help())
 
+
 # handle encode function errors
 @en.error
-async def encode_error(ctx ,error):
-    if isinstance(error ,commands.MissingRequiredArgument):
+async def encode_error(ctx, error):
+    if isinstance(error, commands.MissingRequiredArgument):
         await ctx.send('specify the encoding type you want --> z! en base64 your_string')
+
 
 # define decoding function
 @bot.command()
-async def de(ctx,*,msg):
+async def de(ctx, *, msg):
     if msg:
         decoder = Decoder(msg)
         result = decoder.decode()
@@ -118,21 +126,32 @@ decoded : {}
         else:
             await ctx.send(temp_msg)
 
+
 @bot.command()
-async def decoding_help(ctx,*,msg=None):
+async def decoding_help(ctx, *, msg=None):
     decoder = Decoder()
     await ctx.send(decoder.show_help())
 
+
 # handle decode function errors
 @de.error
-async def decode_error(ctx ,error):
-    if isinstance(error ,commands.MissingRequiredArgument):
+async def decode_error(ctx, error):
+    if isinstance(error, commands.MissingRequiredArgument):
         await ctx.send('specify the decoding type you want --> z! de base64 your_string')
 
 
 @bot.command()
-async def latest_cves(ctx,*,msg=None):
+async def latest_cves(ctx, *, msg=None):
     from modules.features import show_latest_cves
     await ctx.send(show_latest_cves())
+
+
+@bot.command()
+async def hackernews(ctx, count=5):
+    from modules.features import hackerNews
+    newsList = hackerNews(count)
+    for news in newsList:
+        await ctx.reply(embed=news)
+
 
 bot.run(token)
