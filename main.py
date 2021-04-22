@@ -42,6 +42,7 @@ Zer0 Bot :
 +    z! encoding_help   --> show help about encoding strings              +
 +    z! decoding_help   --> show help about decoding strings              +
 +    z! latest_cves     --> show 10 latest CVEs                           +
++    z! hackernews 5    --> show 5 latest hacker news                     + 
 +-------------------------------------------------------------------------+
 .
 ```
