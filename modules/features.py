@@ -8,7 +8,13 @@ from tabulate import tabulate
 import re
 
 
-def show_latest_cves():
+def show_latest_cves(count):
+
+    if count > 19 :
+        count = 19
+    if count < 1 :
+        count = 10
+
     url = 'https://cve.circl.lu/'
 
     cve_req = requests.get(url)
@@ -19,7 +25,7 @@ def show_latest_cves():
     number_of_cves = 0
     cve_names = []
     for l in content:
-        if number_of_cves >= 10:
+        if number_of_cves >= count:
             break
         if l.get('id'):
             number_of_cves += 1

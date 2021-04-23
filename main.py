@@ -41,7 +41,7 @@ Zer0 Bot :
 +    z! ping            --> send a pong response                          +
 +    z! encoding_help   --> show help about encoding strings              +
 +    z! decoding_help   --> show help about decoding strings              +
-+    z! latest_cves     --> show 10 latest CVEs                           +
++    z! latest_cves 10     --> show 10 latest CVEs                           +
 +    z! hackernews 5    --> show 5 latest hacker news                     + 
 +-------------------------------------------------------------------------+
 .
@@ -142,9 +142,9 @@ async def decode_error(ctx, error):
 
 
 @bot.command()
-async def latest_cves(ctx, *, msg=None):
+async def latest_cves(ctx, *, count=10):
     from modules.features import show_latest_cves
-    await ctx.send(show_latest_cves())
+    await ctx.send(show_latest_cves(count))
 
 
 @bot.command()
