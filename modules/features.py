@@ -42,7 +42,7 @@ def show_latest_cves(count):
         specific_cve = str(specific_cve)
         # data
         cve_name = cve
-        cve_link = url + 'cve/' + cve
+        cve_link = "[link]({})".format(url + 'cve/' + cve)
         cvss = re.findall(cvss_pattern, specific_cve)
         if len(cvss) != 1:
             cvss = 'None'
@@ -62,12 +62,14 @@ def show_latest_cves(count):
             published_at = published_at[0]
 
         if summary:
-            summary = summary[0:10] + '...'
+            summary = summary[0:135]
 
         cves_info.append([cve_name, cvss, summary, published_at, cve_link])
 
-    temp_text = tabulate(cves_info, headers=['CVE_Name', 'CVSS', 'Summary', 'Published At', 'CVE_Link'])
-    return temp_text
+    embed = discord.Embed()
+    for c in cves_info:
+        embed.add_field(name=c[0] ,value='CVSS : {}\n{} \nPublish At : {} \n{}'.format(c[1],c[2],c[3],c[4]))
+    return embed
 
 
 '''

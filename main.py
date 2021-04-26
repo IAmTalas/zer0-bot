@@ -144,7 +144,7 @@ async def decode_error(ctx, error):
 @bot.command()
 async def latest_cves(ctx, *, count=10):
     from modules.features import show_latest_cves
-    await ctx.send(show_latest_cves(count))
+    await ctx.reply(embed=show_latest_cves(count))
 
 
 @bot.command()
