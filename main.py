@@ -41,13 +41,13 @@ Zer0 Bot :
 +    z! ping            --> send a pong response                          +
 +    z! encoding_help   --> show help about encoding strings              +
 +    z! decoding_help   --> show help about decoding strings              +
-+    z! latest_cves 10     --> show 10 latest CVEs                           +
++    z! latest_cves 10     --> show 10 latest CVEs                        +
 +    z! hackernews 5    --> show 5 latest hacker news                     + 
 +-------------------------------------------------------------------------+
 .
 ```
     '''
-    await ctx.send(help_msg)
+    await ctx.reply(help_msg)
 
 
 @bot.command()
@@ -60,19 +60,19 @@ async def info(ctx):
     embed.add_field(name="Server ID", value=f"{ctx.guild.id}")
     # embed.set_thumbnail(url=f"{ctx.guild.icon}")
     embed.set_thumbnail(url="https://pluralsight.imgix.net/paths/python-7be70baaac.png")
-    await ctx.send(embed=embed)
+    await ctx.reply(embed=embed)
 
 
 # generally handling errors
 @bot.event
 async def on_command_error(ctx, error):
     if isinstance(error, commands.CommandNotFound):
-        await ctx.send('Unknown command : z! helpme --> for help')
+        await ctx.reply('Unknown command : z! helpme --> for help')
 
 
 @bot.command()
 async def ping(ctx):
-    await ctx.send('pong :ping_pong:')
+    await ctx.reply('pong :ping_pong:')
 
 
 # define encoding function
@@ -92,20 +92,20 @@ encoded : {}
         except KeyError:
             pass
         else:
-            await ctx.send(temp_msg)
+            await ctx.reply(temp_msg)
 
 
 @bot.command()
 async def encoding_help(ctx, *, msg=None):
     encoder = Encoder()
-    await ctx.send(encoder.show_help())
+    await ctx.reply(encoder.show_help())
 
 
 # handle encode function errors
 @en.error
 async def encode_error(ctx, error):
     if isinstance(error, commands.MissingRequiredArgument):
-        await ctx.send('specify the encoding type you want --> z! en base64 your_string')
+        await ctx.reply('specify the encoding type you want --> z! en base64 your_string')
 
 
 # define decoding function
@@ -125,20 +125,20 @@ decoded : {}
         except KeyError:
             pass
         else:
-            await ctx.send(temp_msg)
+            await ctx.reply(temp_msg)
 
 
 @bot.command()
 async def decoding_help(ctx, *, msg=None):
     decoder = Decoder()
-    await ctx.send(decoder.show_help())
+    await ctx.reply(decoder.show_help())
 
 
 # handle decode function errors
 @de.error
 async def decode_error(ctx, error):
     if isinstance(error, commands.MissingRequiredArgument):
-        await ctx.send('specify the decoding type you want --> z! de base64 your_string')
+        await ctx.reply('specify the decoding type you want --> z! de base64 your_string')
 
 
 @bot.command()
