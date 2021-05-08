@@ -68,7 +68,7 @@ def show_latest_cves(count):
 
     embed = discord.Embed()
     for c in cves_info:
-        embed.add_field(name=c[0] ,value='CVSS : {}\n{} \nPublish At : {} \n{}'.format(c[1],c[2],c[3],c[4]))
+        embed.add_field(name=c[0] ,value='CVSS : {}\n{} \nPublished At : {} \n{}'.format(c[1],c[2],c[3],c[4]))
     return embed
 
 
