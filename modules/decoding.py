@@ -4,8 +4,9 @@ Decoding functions
 '''
 
 import base64
+import urllib
 
-all_encoding_algs = ['b64']
+all_encoding_algs = ['b64','url']
 
 def de_base64(word):
 
@@ -16,6 +17,12 @@ def de_base64(word):
     msg = msg_bytes.decode('ascii')
 
     return {'decoded':msg ,'word':word}
+
+def de_url(word):
+
+    decoded_url = urllib.parse.unquote(word)
+
+    return {'decoded':decoded_url ,'word':word}
 
 class Decoder:
 
@@ -28,13 +35,19 @@ class Decoder:
 
     def check_alg(self):
         encoding_alg_and_string = self.msg.split(' ')
-        if len(encoding_alg_and_string) == 2:
+        if len(encoding_alg_and_string) >= 2:
             if encoding_alg_and_string[0] in all_encoding_algs:
+                if len(encoding_alg_and_string) > 2:
+                    string = " ".join(encoding_alg_and_string[1:])
+                elif len(encoding_alg_and_string) == 2:
+                    string = encoding_alg_and_string[1]
+
                 alg = encoding_alg_and_string[0]
-                string = encoding_alg_and_string[1]
 
                 if alg == 'b64':
                     return de_base64(string)
+                elif alg == 'url':
+                    return de_url(string)
 
         else:
             return None
