@@ -24,7 +24,6 @@ def en_url(word):
 
     return {'encoded':url_encoded ,'word':word}
 
-
 class Encoder:
 
     def __init__(self,msg=None):
@@ -38,11 +37,7 @@ class Encoder:
         encoding_alg_and_string = self.msg.split(' ')
         if len(encoding_alg_and_string) >= 2:
             if encoding_alg_and_string[0] in all_encoding_algs :
-                if len(encoding_alg_and_string) > 2:
-                    string = " ".join(encoding_alg_and_string[1:])
-                elif len(encoding_alg_and_string) == 2:
-                    string = encoding_alg_and_string[1]
-
+                string = " ".join(encoding_alg_and_string[1:])
                 alg = encoding_alg_and_string[0]
 
                 if alg == 'b64':
