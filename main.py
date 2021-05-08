@@ -41,7 +41,7 @@ Zer0 Bot :
 +    z! ping            --> send a pong response                          +
 +    z! encoding_help   --> show help about encoding strings              +
 +    z! decoding_help   --> show help about decoding strings              +
-+    z! latest_cves 10     --> show 10 latest CVEs                        +
++    z! latest_cves 10  --> show 10 latest CVEs                        +
 +    z! hackernews 5    --> show 5 latest hacker news                     + 
 +-------------------------------------------------------------------------+
 .
