@@ -18,6 +18,7 @@ from discord.ext import commands
 import datetime
 from modules.encoding import Encoder
 from modules.decoding import Decoder
+from modules.hash import HashManager
 
 bot = commands.Bot(command_prefix='z! ', description="Zer0 Bot")
 
@@ -41,7 +42,8 @@ Zer0 Bot :
 +    z! ping            --> send a pong response                          +
 +    z! encoding_help   --> show help about encoding strings              +
 +    z! decoding_help   --> show help about decoding strings              +
-+    z! latest_cves 10  --> show 10 latest CVEs                        +
++    z! hashing_help    --> show help about hash calculating              +
++    z! latest_cves 10  --> show 10 latest CVEs                           +
 +    z! hackernews 5    --> show 5 latest hacker news                     + 
 +-------------------------------------------------------------------------+
 .
@@ -141,12 +143,39 @@ async def decode_error(ctx, error):
         await ctx.reply('specify the decoding type you want --> z! de base64 your_string')
 
 
+# define hash calculating function
+@bot.command()
+async def hash(ctx, *, msg):
+    if msg:
+        hash_manager = HashManager(msg)
+        result = hash_manager.calculate_hash()
+        temp_msg = '''
+    ```
+    word : {}
+    hashed : {}
+    ```
+    '''
+        try:
+            temp_msg = temp_msg.format(result['word'], result['hash'])
+        except KeyError:
+            pass
+        else:
+            await ctx.reply(temp_msg)
+
+@bot.command()
+async def hashing_help(ctx, *, msg=None):
+    hash_manager = HashManager()
+    await ctx.reply(hash_manager.show_help())
+
+
+# define show latest CVEs function
 @bot.command()
 async def latest_cves(ctx, *, count=10):
     from modules.features import show_latest_cves
     await ctx.reply(embed=show_latest_cves(count))
 
 
+# define show HackerNews' news function
 @bot.command()
 async def hackernews(ctx, count=5):
     from modules.features import hackerNews
