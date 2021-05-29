@@ -14,7 +14,7 @@ except FileNotFoundError:
         exit()
 
 import discord
-from discord.ext import commands
+from discord.ext import commands ,tasks
 import datetime
 from modules.encoding import Encoder
 from modules.decoding import Decoder
@@ -27,6 +27,7 @@ bot = commands.Bot(command_prefix='z! ', description="Zer0 Bot")
 async def on_ready():
     # Setting Gaming status
     await bot.change_presence(activity=discord.Game(name="Listening to z! helpme --> for help"))
+    cve_updates.start()
     print("I'm ready")
 
 
@@ -182,6 +183,16 @@ async def hackernews(ctx, count=5):
     newsList = hackerNews(count)
     for news in newsList:
         await ctx.reply(embed=news)
+
+
+@tasks.loop(seconds=45)
+async def cve_updates():
+    from modules.features import cve_update
+    result = cve_update()
+    channel = bot.get_channel(843229369585500201)
+    if result != None :
+        for item in result:
+            await channel.send(embed=item)
 
 
 bot.run(token)
