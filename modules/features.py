@@ -8,24 +8,6 @@ import os
 
 
 
-'''
-Hacker news top 10 news
-'''
-
-
-def hackerNews(count=10):
-    newsList = []
-    if count <= 20:
-        topNews = requests.get("https://hacker-news.firebaseio.com/v0/topstories.json?print=pretty")
-        for news in topNews.json()[:count]:
-            newsJson = requests.get(f"https://hacker-news.firebaseio.com/v0/item/{news}.json?print=pretty").json()
-            embed = discord.Embed(title=f"{newsJson['title']}", description=f"by {newsJson['by']}",
-                                  color=discord.Color.red())
-            embed.add_field(name="Link", value=f"{newsJson['url']}")
-            newsList.append(embed)
-        return newsList
-
-
 
 
 
