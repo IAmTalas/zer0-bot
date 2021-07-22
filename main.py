@@ -20,7 +20,7 @@ from modules.encoding import Encoder
 from modules.decoding import Decoder
 from modules.hash import HashManager
 
-bot = commands.Bot(command_prefix='z! ', description="Zer0 Bot")
+bot = commands.Bot(command_prefix='! ', description="Zer0 Bot")
 
 
 @bot.event
@@ -38,14 +38,12 @@ async def helpme(ctx):
 Zer0 Bot :
 .
 +-------------------------------------------------------------------------+
-+    z! helpme          --> show this help message                        +
-+    z! info            --> show server info                              +
-+    z! ping            --> send a pong response                          +
-+    z! encoding_help   --> show help about encoding strings              +
-+    z! decoding_help   --> show help about decoding strings              +
-+    z! hashing_help    --> show help about hash calculating              +
-+    z! latest_cves 10  --> show 10 latest CVEs                           +
-+    z! hackernews 5    --> show 5 latest hacker news                     + 
++    ! helpme          --> show this help message                        +
++    ! info            --> show server info                              +
++    ! ping            --> send a pong response                          +
++    ! encoding_help   --> show help about encoding strings              +
++    ! decoding_help   --> show help about decoding strings              +
++    ! hashing_help    --> show help about hash calculating              +
 +-------------------------------------------------------------------------+
 .
 ```
@@ -70,7 +68,7 @@ async def info(ctx):
 @bot.event
 async def on_command_error(ctx, error):
     if isinstance(error, commands.CommandNotFound):
-        await ctx.reply('Unknown command : z! helpme --> for help')
+        await ctx.reply('Unknown command : ! helpme --> for help')
 
 
 @bot.command()
@@ -171,28 +169,28 @@ async def hashing_help(ctx, *, msg=None):
 
 # define show latest CVEs function
 @bot.command()
-async def latest_cves(ctx, *, count=10):
+async def latest_cves(ctx):
     from modules.features import show_latest_cves
-    await ctx.reply(embed=show_latest_cves(count))
+    embeds = show_latest_cves()
+    for embed in embeds:
+        await ctx.reply(embed=embed)
 
 
-# define show HackerNews' news function
 @bot.command()
-async def hackernews(ctx, count=5):
-    from modules.features import hackerNews
-    newsList = hackerNews(count)
-    for news in newsList:
-        await ctx.reply(embed=news)
+async def newupcomming(ctx,*arg):
+    from modules.features import add_upcomming
+    embed_item = add_upcomming(arg[0], arg[1])
+    await ctx.reply(embed=embed_item)
 
 
-@tasks.loop(seconds=45)
+@tasks.loop(minutes=5)
 async def cve_updates():
-    from modules.features import cve_update
-    result = cve_update()
-    channel = bot.get_channel(843229369585500201)
-    if result != None :
-        for item in result:
-            await channel.send(embed=item)
+    from modules.features import check_cve_update
+    channel = bot.get_channel(" YOUR CHANELL ID ")
+    embeds = check_cve_update()
+    if embeds != None :
+        for embed in embeds:
+            await channel.send(embed=embed)
 
 
 bot.run(token)
