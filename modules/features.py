@@ -1,6 +1,7 @@
 '''
 Module for adding features
 '''
+
 import requests
 import discord
 import os
@@ -28,11 +29,13 @@ def add_upcomming(title, date):
 
     data = {"title" : title, "time" : str(iran_to_utc(date))}
 
-    if not os.path.exists('events.json'):
+    if not os.path.exists('modules/events.json'):
         with open('events.json', 'w') as file:
             file.write('[]')
 
-    with open('events.json','r+') as file:
+    remove_expired_event()
+
+    with open('modules/events.json','r+') as file:
         # First we load existing data into a dict.
         file_data = json.load(file)
         # Join new_data with file_data inside emp_details
@@ -46,3 +49,10 @@ def add_upcomming(title, date):
     embed = discord.Embed(title=f"New Event : {title}", colour=discord.Color.random(), description=" @everyone Wind up your clocks !")
     embed.set_footer(text=date)
     return embed
+
+def remove_expired_event():
+    with open('modules/events.json', 'r' ,encoding='utf-8') as file:
+        file_json = json.load(file)
+        valid_list = [item for item in file_json if not (datetime.datetime.strptime(item['time'], r"%Y-%m-%d %H:%M") - datetime.datetime.utcnow()).days <= -1 ]
+    with open('modules/events.json', 'w+' ,encoding='utf-8') as file:    
+        file.write(json.dumps(valid_list, ensure_ascii=False ,indent=4))
