@@ -45,7 +45,6 @@ def add_upcomming(title, date):
         # convert back to json.
         json.dump(file_data, file, indent = 4)
  
-
     embed = discord.Embed(title=f"New Event : {title}", colour=discord.Color.random(), description=" @everyone Wind up your clocks !")
     embed.set_footer(text=date)
     return embed
@@ -103,3 +102,7 @@ def check_cve_update():
         return render_cve_embed(update_list)
 
 init_request = send_request("https://cve.circl.lu/api/query")
+
+def show_latest_cves():
+    global init_request
+    return render_cve_embed(data=init_request)
