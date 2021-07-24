@@ -5,3 +5,4 @@ __pycache__/
 *.py[cod]
 *$py.class
 modules/test**.py
+.env*
