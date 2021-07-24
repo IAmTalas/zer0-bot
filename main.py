@@ -16,9 +16,11 @@ except FileNotFoundError:
 import discord
 from discord.ext import commands ,tasks
 import datetime
+import time
 from modules.encoding import Encoder
 from modules.decoding import Decoder
 from modules.hash import HashManager
+import asyncio
 
 bot = commands.Bot(command_prefix='! ', description="Zer0 Bot")
 
@@ -28,6 +30,7 @@ async def on_ready():
     # Setting Gaming status
     await bot.change_presence(activity=discord.Game(name="Listening to z! helpme --> for help"))
     cve_updates.start()
+    news.start()
     print("I'm ready")
 
 
@@ -174,6 +177,7 @@ async def latest_cves(ctx):
     embeds = show_latest_cves()
     for embed in embeds:
         await ctx.reply(embed=embed)
+        await asyncio.sleep(3)
 
 
 @bot.command()
@@ -191,6 +195,20 @@ async def cve_updates():
     if embeds != None :
         for embed in embeds:
             await channel.send(embed=embed)
+            await asyncio.sleep(3)
+
+last_timestamp = time.time()
+@tasks.loop(hours=5)
+async def news():
+    global last_timestamp
+    from modules.feeder import render_msg
+    channel = bot.get_channel(" YOUR CHANELL ID ")
+    embeds = render_msg(site_count=30, message_count=15, label_filter=['security'], timestamp_filter=True, timestamp=last_timestamp)
+    if embeds != None :
+        for embed in embeds:
+            await channel.send(embed=embed)
+            await asyncio.sleep(3)
+    last_timestamp = time.time()
 
 
 bot.run(token)
